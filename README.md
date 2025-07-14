@@ -35,13 +35,25 @@
 ### Option 1: Automated Setup (Recommended) ⭐
 **<span style="color: red">⚠️ Note: This setup has only been tested on Ubuntu environments.</span>**
 
-
-
 ```bash
 git clone git@github.com:MuhammadAgf/llm_be_playground.git
 cd llm_be_playground
 make setup  # Installs all prerequisites and sets up the environment
 ```
+
+**After automated setup, you still need to configure your API keys:**
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit the .env file with your API keys
+vim .env  # or use your preferred editor
+```
+
+**Required API Keys:**
+- `GEMINI_API_KEY` - Get from [Google AI Studio](https://makersuite.google.com/app/apikey)
+- `OPENWEATHER_API_KEY` - Optional, get from [OpenWeatherMap](https://openweathermap.org/api) (uses mock data if not provided)
 
 ### Option 2: Manual Setup
 ```bash
@@ -49,10 +61,60 @@ make setup  # Installs all prerequisites and sets up the environment
 git clone git@github.com:MuhammadAgf/llm_be_playground.git
 cd llm_be_playground
 
-# 2. Set up environment variables
+# 2. Install Python 3.11+ if not already installed
+# Ubuntu/Debian:
+sudo apt update && sudo apt install python3.11 python3.11-venv python3-pip
+
+# macOS (with Homebrew):
+brew install python@3.11
+
+# 3. Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 4. Install dependencies
+pip install -r requirements.txt
+
+# 5. Set up environment variables
 cp .env.example .env
-# Edit .env and add your API keys
+
+# 6. Edit .env with your API keys
+vim .env  # or use your preferred editor
 ```
+
+**Required API Keys:**
+- `GEMINI_API_KEY` - Get from [Google AI Studio](https://makersuite.google.com/app/apikey)
+- `OPENWEATHER_API_KEY` - Optional, get from [OpenWeatherMap](https://openweathermap.org/api) (uses mock data if not provided)
+
+---
+
+## 🚀 After Setup - Running the Application
+
+### For Local Development
+```bash
+# Activate virtual environment (if not already active)
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Run in development mode (with auto-reload)
+make dev
+
+# Or run in production mode
+make run
+```
+
+### For Docker Deployment
+```bash
+# Run with Docker Compose (recommended)
+make docker-compose-up
+
+# Or run with Docker directly
+make docker-run
+```
+
+### Verify Installation
+- 🌐 Visit [http://localhost:8000/docs](http://localhost:8000/docs) for API documentation
+- 🔍 Check health: `curl http://localhost:8000/health`
+- 🧪 Test with a query: `curl -X POST http://localhost:8000/query -H 'Content-Type: application/json' -d '{"query": "What is 2 + 2?"}'`
 
 ---
 
