@@ -1,14 +1,20 @@
-from app.models import QueryState
-from app.agents import extractor_agent
 import math
+
 import numexpr
+
+from app.agents import extractor_agent
+from app.models import QueryState
+
 
 async def extract_math_expr(query: str) -> str:
     """Extract arithmetic expression from user query for Python eval."""
-    prompt = ("Extract the arithmetic expression from the user's query so it's runnable by python eval. "
-              f"If none found, return an empty string. Query: '{query}'")
+    prompt = (
+        "Extract the arithmetic expression from the user's query so it's runnable by "
+        f"python eval. If none found, return an empty string. Query: '{query}'"
+    )
     resp = await extractor_agent.run(prompt)
     return resp.output.strip()
+
 
 def calculate_math_expression(expression: str) -> str:
     """Calculate expression using Python's numexpr library.
@@ -25,9 +31,10 @@ def calculate_math_expression(expression: str) -> str:
         numexpr.evaluate(
             expression.strip(),
             global_dict={},
-            local_dict=local_dict, 
+            local_dict=local_dict,
         )
     )
+
 
 async def math_tool(state: QueryState) -> QueryState:
     """Process mathematical expressions."""
@@ -39,4 +46,4 @@ async def math_tool(state: QueryState) -> QueryState:
         state.result = calculate_math_expression(expr)
     except Exception as e:
         state.result = f"Error evaluating '{expr}': {e}"
-    return state 
+    return state

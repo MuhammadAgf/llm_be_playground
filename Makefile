@@ -18,7 +18,7 @@ dev:
 	. venv/bin/activate && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 clean:
-	rm -rf venv __pycache__ .pytest_cache 
+	rm -rf venv __pycache__ .pytest_cache
 
 # Docker commands with git versioning
 docker-build:
@@ -65,4 +65,4 @@ version:
 	@echo "Git Version: $(GIT_VERSION)"
 	@echo "Git Commit: $(GIT_COMMIT)"
 	@echo "Image Name: $(IMAGE_NAME)"
-	@echo "Image Tag: $(IMAGE_TAG)" 
+	@echo "Image Tag: $(IMAGE_TAG)"

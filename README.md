@@ -8,7 +8,7 @@
 ![Docker](https://img.shields.io/badge/Docker-20.10+-blue.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-**A modular multi-agent backend for routing natural language queries to the right tool**  
+**A modular multi-agent backend for routing natural language queries to the right tool**
 *Math, Weather, LLM, and more - powered by FastAPI, LangGraph, and Gemini/OpenAI APIs*
 
 [🚀 Quick Start](#-quick-start) • [🐳 Docker](#-docker-deployment) • [🛠️ Development](#️-local-development) • [📚 API Docs](#-api-endpoints)
@@ -168,7 +168,7 @@ graph TD
     E --> F[Specific Tools]
     F --> G[Response Generation]
     G --> H[User Response]
-    
+
     style A fill:#e1f5fe
     style H fill:#e8f5e8
     style F fill:#fff3e0
@@ -367,7 +367,7 @@ The project includes automatic git versioning for Docker images:
 ### 🏷️ Version Tagging
 - **Automatic** 🔄 - Images are tagged with git version using `git describe --tags --always --dirty`
 - **Dual Tags** 🏷️ - Each build creates both version-specific and `latest` tags
-- **Examples** 📝: 
+- **Examples** 📝:
   - `llm-be-playground:v1.2.3` (tagged release)
   - `llm-be-playground:dev-abc123` (development commit)
   - `llm-be-playground:latest` (always points to most recent build)

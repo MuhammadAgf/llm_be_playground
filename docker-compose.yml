@@ -1,6 +1,6 @@
 services:
   llm-be-playground:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     image: llm-be-playground:${GIT_VERSION:-latest}
@@ -32,4 +32,4 @@ services:
 
 networks:
   llm-network:
-    driver: bridge 
+    driver: bridge

@@ -56,11 +56,11 @@ detect_os() {
 # Function to install Python
 install_python() {
     local os=$(detect_os)
-    
+
     # Check if Python 3.13 is already installed (regardless of what python3 points to)
     if command_exists python3.13; then
         print_success "Python 3.13 is already installed"
-        
+
         # Check if python3 command points to 3.13
         if command_exists python3; then
             local current_version=$(python3 --version 2>&1 | cut -d' ' -f2 | cut -d'.' -f1,2)
@@ -69,7 +69,7 @@ install_python() {
                 sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
                 sudo update-alternatives --set python3 /usr/bin/python3.13
                 print_success "python3 now points to Python 3.13"
-                
+
                 # Verify the change
                 local new_version=$(python3 --version 2>&1 | cut -d' ' -f2 | cut -d'.' -f1,2)
                 if [[ "$new_version" == "3.13" ]]; then
@@ -83,7 +83,7 @@ install_python() {
         fi
         return 0
     fi
-    
+
     # Check if any compatible Python version is already the default
     if command_exists python3; then
         local version=$(python3 --version 2>&1 | cut -d' ' -f2 | cut -d'.' -f1,2)
@@ -92,9 +92,9 @@ install_python() {
             return 0
         fi
     fi
-    
+
     print_status "Installing Python 3.13..."
-    
+
     case $os in
         "ubuntu")
             sudo apt-get update
@@ -120,7 +120,7 @@ install_python() {
             return 1
             ;;
     esac
-    
+
     print_success "Python 3.13 installed successfully"
 }
 
@@ -130,31 +130,31 @@ install_docker() {
         print_success "Docker is already installed"
         return 0
     fi
-    
+
     print_status "Installing Docker..."
-    
+
     local os=$(detect_os)
-    
+
     case $os in
         "ubuntu")
             # Remove old versions
             sudo apt-get remove -y docker docker-engine docker.io containerd runc || true
-            
+
             # Install prerequisites
             sudo apt-get update
             sudo apt-get install -y ca-certificates curl gnupg lsb-release
-            
+
             # Add Docker's official GPG key
             sudo mkdir -p /etc/apt/keyrings
             curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-            
+
             # Set up repository
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-            
+
             # Install Docker
             sudo apt-get update
             sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-            
+
             # Add user to docker group
             sudo usermod -aG docker $USER
             ;;
@@ -177,7 +177,7 @@ install_docker() {
             return 1
             ;;
     esac
-    
+
     print_success "Docker installed successfully"
     print_warning "You may need to log out and back in for Docker group changes to take effect"
 }
@@ -188,11 +188,11 @@ install_curl() {
         print_success "curl is already installed"
         return 0
     fi
-    
+
     print_status "Installing curl..."
-    
+
     local os=$(detect_os)
-    
+
     case $os in
         "ubuntu")
             sudo apt-get update && sudo apt-get install -y curl
@@ -208,7 +208,7 @@ install_curl() {
             fi
             ;;
     esac
-    
+
     print_success "curl installed successfully"
 }
 
@@ -221,7 +221,7 @@ setup_venv() {
         python3 -m venv venv
         print_success "Virtual environment created"
     fi
-    
+
     print_status "Installing Python dependencies..."
     source venv/bin/activate
     pip install --upgrade pip
@@ -235,7 +235,7 @@ build_docker() {
         print_status "Building Docker image..."
         docker build -t llm-be-playground .
         print_success "Docker image built successfully"
-        
+
         # Test docker compose command
         if docker compose version >/dev/null 2>&1; then
             print_success "Docker Compose is available"
@@ -250,24 +250,24 @@ build_docker() {
 # Main setup function
 main() {
     print_status "Starting LLM Backend Playground setup..."
-    
+
     # Check if running as root
     if [[ $EUID -eq 0 ]]; then
         print_error "This script should not be run as root"
         exit 1
     fi
-    
+
     # Install prerequisites
     install_python
     install_curl
     install_docker
-    
+
     # Setup Python environment
     setup_venv
-    
+
     # Build Docker image if Docker is available
     build_docker
-    
+
     print_success "Setup completed successfully!"
     echo ""
     print_status "Next steps:"
@@ -279,4 +279,4 @@ main() {
 }
 
 # Run main function
-main "$@" 
+main "$@"
