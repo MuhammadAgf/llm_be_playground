@@ -1,0 +1,35 @@
+services:
+  llm-be-playground:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: llm-be-playground:${GIT_VERSION:-latest}
+    container_name: llm-be-playground
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    env_file:
+      - .env
+    volumes:
+      # Mount the app directory for development (optional)
+      # - ./app:/app/app:ro
+      # Mount logs directory if needed
+      - ./logs:/app/logs
+    restart: unless-stopped
+    labels:
+      - "version=${GIT_VERSION:-latest}"
+      - "commit=${GIT_COMMIT:-unknown}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - llm-network
+
+networks:
+  llm-network:
+    driver: bridge 
