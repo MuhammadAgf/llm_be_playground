@@ -57,10 +57,38 @@ detect_os() {
 install_python() {
     local os=$(detect_os)
     
+    # Check if Python 3.13 is already installed (regardless of what python3 points to)
+    if command_exists python3.13; then
+        print_success "Python 3.13 is already installed"
+        
+        # Check if python3 command points to 3.13
+        if command_exists python3; then
+            local current_version=$(python3 --version 2>&1 | cut -d' ' -f2 | cut -d'.' -f1,2)
+            if [[ "$current_version" != "3.13" ]]; then
+                print_status "Updating python3 alternative to point to Python 3.13..."
+                sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.13 1
+                sudo update-alternatives --set python3 /usr/bin/python3.13
+                print_success "python3 now points to Python 3.13"
+                
+                # Verify the change
+                local new_version=$(python3 --version 2>&1 | cut -d' ' -f2 | cut -d'.' -f1,2)
+                if [[ "$new_version" == "3.13" ]]; then
+                    print_success "Successfully updated python3 to Python 3.13"
+                else
+                    print_error "python3 still shows version $new_version. You may need to restart your shell or check for aliases."
+                    print_error "Try running: alias python3"
+                    exit 1
+                fi
+            fi
+        fi
+        return 0
+    fi
+    
+    # Check if any compatible Python version is already the default
     if command_exists python3; then
         local version=$(python3 --version 2>&1 | cut -d' ' -f2 | cut -d'.' -f1,2)
         if [[ "$version" == "3.11" || "$version" == "3.12" || "$version" == "3.13" ]]; then
-            print_success "Python $version is already installed"
+            print_success "Python $version is already installed and set as default"
             return 0
         fi
     fi
